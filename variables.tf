@@ -1,5 +1,5 @@
 variable "nvkey" {
-  default = "meghanamumbai"
+  default = "nvkey"
 }
 
 variable "pvt_key" {
