@@ -25,18 +25,13 @@ node {
     }
 
 	
-	/*   
-	   stage('Downstream Build -- Ansible Deployment'){
-		 	build 'pipe-Ansible'
-		}
-  */
 
-    /*
+    
     stage('Deployment into production'){
  	// sh label: 'terraform', script: 'ansible-playbook -i inventory -u ubuntu --key /root/.ssh/keypair.pem web-playbook.yml'
 	ansiblePlaybook become: true, credentialsId: '920689e7-93e5-4d9e-b460-bff2942f37ed', disableHostKeyChecking: true, inventory: 'inventory', playbook: 'web-playbook.yml'
      }
-   */
+   
 
  notify('Job Completed')   
 } catch (err) {
