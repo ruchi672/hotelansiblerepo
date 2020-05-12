@@ -1,15 +1,15 @@
-variable "key_name" {
+variable "nvkey" {
   default = "meghanamumbai"
 }
 
 variable "pvt_key" {
-  default = "/root/.ssh/mkey.pem"
+  default = "/root/.ssh/nvkey.pem"
 }
 
 variable "us-east-zones" {
   default = ["us-east-1a", "us-east-1b"]
 }
 
-variable "sg-id" {
-  default = "sg-0eb024eb164eb86c0"
+variable "sg1" {
+  default = "sg-0c9c83c3b45cd9ebd"
 }

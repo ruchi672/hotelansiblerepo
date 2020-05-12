@@ -1,0 +1,57 @@
+node {
+ try  {
+  notify('Job Started') 
+     
+  stage('Git-Checkout') {
+   git 'https://github.com/ruchi672/hotelansiblerepo.git'
+  }
+  
+  stage('AWS - Production Server Provisioning'){
+	   sh label: 'terraform', script: '/root/bin/terraform  init'
+	   sh label: 'terraform', script: '/root/bin/terraform  apply -input=false -auto-approve'
+	   }
+ 
+ stage('Download package from JFrog') {
+            def server= Artifactory.server 'artifactory'
+            def downloadSpec = """{
+            "files": [
+            {
+                "pattern": "hotelmanagementproject/hotelmanagement-version-1.war",
+                "target": "./hotelmanagement.war"
+            }
+            ]
+            }"""
+        server.download(downloadSpec)
+    }
+
+	
+	/*   
+	   stage('Downstream Build -- Ansible Deployment'){
+		 	build 'pipe-Ansible'
+		}
+  */
+
+    /*
+    stage('Deployment into production'){
+ 	// sh label: 'terraform', script: 'ansible-playbook -i inventory -u ubuntu --key /root/.ssh/keypair.pem web-playbook.yml'
+	ansiblePlaybook become: true, credentialsId: '920689e7-93e5-4d9e-b460-bff2942f37ed', disableHostKeyChecking: true, inventory: 'inventory', playbook: 'web-playbook.yml'
+     }
+   */
+
+ notify('Job Completed')   
+} catch (err) {
+  notify("Error ${err}")
+  currentBuild.result = 'FAILURE'
+}
+}
+
+
+
+def notify(status){
+    emailext (
+	to: "ruchibhadani555@gmail.com",
+	subject: "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+	 body: """<p>${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+	<p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
+		)
+	}
